@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="pkb-app:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="pkb-app.war">
+      <element id="artifact" artifact-name="pkb-app:war exploded" />
+    </root>
+  </artifact>
+</component>

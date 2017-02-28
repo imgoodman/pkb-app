@@ -47,7 +47,11 @@
     listener 主要靠读取context-param中的配置信息来进行相关的配置信息获取。
     -->
   <listener>
-    <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+
+  <welcome-file-list>
+    <welcome-file>/WEB-INF/views/tpls/index.html</welcome-file>
+  </welcome-file-list>
 
 </web-app>

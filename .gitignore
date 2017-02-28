@@ -63,7 +63,11 @@ $RECYCLE.BIN/
 *.lnk
 src/main/resources/jdbc.properties
 src/main/resources/jdbc.properties
+target/
 target/classes/jdbc.properties
 target/classes/mybatis-generator/generatorConfig.xml
 target/pkb-app/WEB-INF/classes/mybatis-generator/generatorConfig.xml
 target/pkb-app/WEB-INF/classes/jdbc.properties
+target/pkb-app/WEB-INF/web.xml
+target/classes/mybatis/TableMapper.xml
+target/pkb-app/WEB-INF/web.xml

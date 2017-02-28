@@ -153,26 +153,26 @@
     <!--</bean>-->
 
     <!--全局配置拦截器-->
-    <!--<mvc:interceptors>-->
-        <!--<mvc:interceptor>-->
-            <!--<mvc:mapping path="/**"/>-->
-            <!--<mvc:exclude-mapping path="/*"/>-->
-            <!--<mvc:exclude-mapping path="/file/img/**"/>-->
-            <!--<mvc:exclude-mapping path="/favicon.ico"/>-->
-            <!--<mvc:exclude-mapping path="/js/**"/>-->
-            <!--<mvc:exclude-mapping path="/css/**"/>-->
-            <!--<mvc:exclude-mapping path="/fonts/**"/>-->
-            <!--<mvc:exclude-mapping path="/framework/**"/>-->
-            <!--<mvc:exclude-mapping path="/image/**"/>-->
-            <!--&lt;!&ndash;对于注册和登录请求不需要验证登录，所以排除在LoginInterceptor的拦截外-->
-             <!--登录 /auth/login-->
-             <!--注册 /auth/regist-->
-             <!--&ndash;&gt;-->
-            <!--<bean id="loginInterceptor" class="com.i51zhishi.web.interceptor.LoginInterceptor">-->
-            <!--</bean>-->
-        <!--</mvc:interceptor>-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/*"/>
+            <mvc:exclude-mapping path="/file/img/**"/>
+            <mvc:exclude-mapping path="/favicon.ico"/>
+            <mvc:exclude-mapping path="/js/**"/>
+            <mvc:exclude-mapping path="/css/**"/>
+            <mvc:exclude-mapping path="/fonts/**"/>
+            <mvc:exclude-mapping path="/framework/**"/>
+            <mvc:exclude-mapping path="/image/**"/>
+            <!--对于注册和登录请求不需要验证登录，所以排除在LoginInterceptor的拦截外
+             登录 /auth/login
+             注册 /auth/regist
+             -->
+            <bean id="loginInterceptor" class="com.i51zhishi.kb.interceptor.LoginInterceptor">
+            </bean>
+        </mvc:interceptor>
 
-    <!--</mvc:interceptors>-->
+    </mvc:interceptors>
     <!-- 文件上传 -->
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver" >

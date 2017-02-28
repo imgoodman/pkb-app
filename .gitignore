@@ -71,3 +71,4 @@ target/pkb-app/WEB-INF/classes/jdbc.properties
 target/pkb-app/WEB-INF/web.xml
 target/classes/mybatis/TableMapper.xml
 target/pkb-app/WEB-INF/web.xml
+target/pkb-app/WEB-INF/web.xml

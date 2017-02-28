@@ -61,3 +61,9 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+src/main/resources/jdbc.properties
+src/main/resources/jdbc.properties
+target/classes/jdbc.properties
+target/classes/mybatis-generator/generatorConfig.xml
+target/pkb-app/WEB-INF/classes/mybatis-generator/generatorConfig.xml
+target/pkb-app/WEB-INF/classes/jdbc.properties

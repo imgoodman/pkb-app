@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.i51zhishi.kb.mapper.TableMapper">
+  <resultMap id="BaseResultMap" type="com.i51zhishi.kb.entity.Table">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name_cn" jdbcType="VARCHAR" property="nameCn" />
+    <result column="name_en" jdbcType="VARCHAR" property="nameEn" />
+    <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="state" jdbcType="BIT" property="state" />
+    <result column="page_generate_time" jdbcType="TIMESTAMP" property="pageGenerateTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_table
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.i51zhishi.kb.entity.Table">
+    insert into t_table (id, name_cn, name_en, 
+      creator_id, create_time, remarks, 
+      state, page_generate_time)
+    values (#{id,jdbcType=INTEGER}, #{nameCn,jdbcType=VARCHAR}, #{nameEn,jdbcType=VARCHAR}, 
+      #{creatorId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, 
+      #{state,jdbcType=BIT}, #{pageGenerateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.i51zhishi.kb.entity.Table">
+    update t_table
+    set name_cn = #{nameCn,jdbcType=VARCHAR},
+      name_en = #{nameEn,jdbcType=VARCHAR},
+      creator_id = #{creatorId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      state = #{state,jdbcType=BIT},
+      page_generate_time = #{pageGenerateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, name_cn, name_en, creator_id, create_time, remarks, state, page_generate_time
+    from t_table
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, name_cn, name_en, creator_id, create_time, remarks, state, page_generate_time
+    from t_table
+  </select>
+  <resultMap id="BaseResultMap" type="com.i51zhishi.kb.entity.Table">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name_cn" jdbcType="VARCHAR" property="nameCn" />
+    <result column="name_en" jdbcType="VARCHAR" property="nameEn" />
+    <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_table
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.i51zhishi.kb.entity.Table">
+    insert into t_table (id, name_cn, name_en, 
+      creator_id, create_time, remarks
+      )
+    values (#{id,jdbcType=INTEGER}, #{nameCn,jdbcType=VARCHAR}, #{nameEn,jdbcType=VARCHAR}, 
+      #{creatorId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.i51zhishi.kb.entity.Table">
+    update t_table
+    set name_cn = #{nameCn,jdbcType=VARCHAR},
+      name_en = #{nameEn,jdbcType=VARCHAR},
+      creator_id = #{creatorId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, name_cn, name_en, creator_id, create_time, remarks
+    from t_table
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, name_cn, name_en, creator_id, create_time, remarks
+    from t_table
+  </select>
+</mapper>

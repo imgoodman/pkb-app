@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.i51zhishi.kb.mapper.ColumnMapper">
+  <resultMap id="BaseResultMap" type="com.i51zhishi.kb.entity.Column">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="table_id" jdbcType="INTEGER" property="tableId" />
+    <result column="name_cn" jdbcType="VARCHAR" property="nameCn" />
+    <result column="name_en" jdbcType="VARCHAR" property="nameEn" />
+    <result column="value_type" jdbcType="INTEGER" property="valueType" />
+    <result column="is_required" jdbcType="BIT" property="isRequired" />
+    <result column="can_repeat" jdbcType="BIT" property="canRepeat" />
+    <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
+    <result column="can_search" jdbcType="BIT" property="canSearch" />
+    <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="value_max_length" jdbcType="INTEGER" property="valueMaxLength" />
+    <result column="value_table_id" jdbcType="INTEGER" property="valueTableId" />
+    <result column="value_table_column_id" jdbcType="INTEGER" property="valueTableColumnId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_column
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.i51zhishi.kb.entity.Column">
+    insert into t_column (id, table_id, name_cn, 
+      name_en, value_type, is_required, 
+      can_repeat, order_index, can_search, 
+      creator_id, create_time, remarks, 
+      value_max_length, value_table_id, value_table_column_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{tableId,jdbcType=INTEGER}, #{nameCn,jdbcType=VARCHAR}, 
+      #{nameEn,jdbcType=VARCHAR}, #{valueType,jdbcType=INTEGER}, #{isRequired,jdbcType=BIT}, 
+      #{canRepeat,jdbcType=BIT}, #{orderIndex,jdbcType=INTEGER}, #{canSearch,jdbcType=BIT}, 
+      #{creatorId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, 
+      #{valueMaxLength,jdbcType=INTEGER}, #{valueTableId,jdbcType=INTEGER}, #{valueTableColumnId,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.i51zhishi.kb.entity.Column">
+    update t_column
+    set table_id = #{tableId,jdbcType=INTEGER},
+      name_cn = #{nameCn,jdbcType=VARCHAR},
+      name_en = #{nameEn,jdbcType=VARCHAR},
+      value_type = #{valueType,jdbcType=INTEGER},
+      is_required = #{isRequired,jdbcType=BIT},
+      can_repeat = #{canRepeat,jdbcType=BIT},
+      order_index = #{orderIndex,jdbcType=INTEGER},
+      can_search = #{canSearch,jdbcType=BIT},
+      creator_id = #{creatorId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      value_max_length = #{valueMaxLength,jdbcType=INTEGER},
+      value_table_id = #{valueTableId,jdbcType=INTEGER},
+      value_table_column_id = #{valueTableColumnId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, table_id, name_cn, name_en, value_type, is_required, can_repeat, order_index, 
+    can_search, creator_id, create_time, remarks, value_max_length, value_table_id, value_table_column_id
+    from t_column
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, table_id, name_cn, name_en, value_type, is_required, can_repeat, order_index, 
+    can_search, creator_id, create_time, remarks, value_max_length, value_table_id, value_table_column_id
+    from t_column
+  </select>
+</mapper>

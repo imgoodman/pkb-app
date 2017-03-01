@@ -8,16 +8,18 @@
                          http://www.springframework.org/schema/context
                         http://www.springframework.org/schema/context/spring-context-3.2.xsd
                         http://www.springframework.org/schema/mvc
-                        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-    <!--启用spring的一些annotation -->
-    <context:annotation-config/>
-
+                        http://www.springframework.org/schema/mvc/spring-mvc.xsd"
+       default-lazy-init="true" default-autowire="byName">
     <!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->
     <context:component-scan base-package="com.i51zhishi.kb.controller">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
-    <!--HandlerMapping 无需配置，springmvc可以默认启动-->
+    <!-- 配置注解驱动 可以将request参数与绑定到controller参数上 -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+
+    <mvc:default-servlet-handler></mvc:default-servlet-handler>
+
 
     <!--静态资源映射-->
     <!--本项目把静态资源放在了WEB-INF的statics目录下，资源映射如下-->
@@ -30,15 +32,59 @@
     <!--<mvc:resources mapping="/js/**" location="/statics/js/"/>-->
     <!--<mvc:resources mapping="/image/**" location="/statics/images/"/>-->
 
-    <!-- 配置注解驱动 可以将request参数与绑定到controller参数上 -->
-    <mvc:annotation-driven/>
+    <!--thymeleaf 模板引擎配置-->
+
+    <bean id="emailTemplateResolver" class="org.thymeleaf.templateresolver.ClassLoaderTemplateResolver">
+        <property name="prefix" value="mail/" />
+        <property name="templateMode" value="HTML" />
+        <property name="characterEncoding" value="UTF-8" />
+        <property name="checkExistence" value="true" />
+        <property name="order" value="1" />
+        <!-- Template cache is true by default. Set to false if you want -->
+        <!-- templates to be automatically updated when modified.        -->
+        <property name="cacheable" value="true" />
+    </bean>
+
+
+
+    <!--模板解析器-->
+    <bean id="webTemplateResolver" class="org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver">
+        <property name="prefix" value="/WEB-INF/views" />
+        <property name="templateMode" value="HTML" />
+        <property name="characterEncoding" value="utf-8"/>
+        <property name="suffix" value=".html"/>
+        <property name="order" value="2"/>
+    </bean>
+
+    <bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+        <property name="templateResolvers">
+            <set>
+                <ref bean="emailTemplateResolver"/>
+                <ref bean="webTemplateResolver" />
+            </set>
+        </property>
+        <!--第三方layout插件-->
+        <property name="additionalDialects">
+            <set>
+                <bean class="nz.net.ultraq.thymeleaf.LayoutDialect"></bean>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="thymeleafViewResolver" class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+        <property name="templateEngine" ref="templateEngine" />
+        <property name="viewNames" value="/tpls/*"/>
+        <property name="characterEncoding" value="UTF-8" />
+        <property name="order" value="0"/>
+    </bean>
 
     <!-- 对模型视图名称的解析，即在模型视图名称添加前后缀(如果最后一个还是表示文件夹,则最后的斜杠不要漏了) 使用JSP-->
     <!-- 默认的视图解析器 在上边的解析错误时使用 (默认使用html)- -->
     <bean id="defaultViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
         <property name="prefix" value="/WEB-INF/views/tpls/"/><!--设置JSP文件的目录位置-->
-        <property name="suffix" value=".html"/>
+        <property name="suffix" value=".jsp"/>
+        <property name="order" value="1"></property>
     </bean>
 
     <!-- springmvc文件上传需要配置的节点-->

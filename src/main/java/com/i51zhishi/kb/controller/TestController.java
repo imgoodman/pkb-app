@@ -17,6 +17,6 @@ public class TestController
     public String index()
     {
         log.debug("asas");
-        return "index";
+        return "/tpls/index";
     }
 }

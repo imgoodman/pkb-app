@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:include="/tpls/header::header('定义数据表')" th:remove="tag"></div>
+</head>
+<body>
+<div th:include="/tpls/top-menu-vue::top_menu" th:remove="tag"></div>
+
+<div class="container" id="main_wrapper">
+    <div class="page-header">
+        <h1>数据表管理</h1>
+    </div>
+    <div class="row">
+        <div class="col-lg-5 col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">数据表</h2>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default"><i class="fa fa-fw fa-plus"></i>新增</button>
+                    <button type="button" class="btn btn-default"><i class="fa fa-fw fa-edit"></i>编辑</button>
+                    <button type="button" class="btn btn-danger"><i class="fa fa-fw fa-trash"></i>删除</button>
+                    <button type="button" class="btn btn-success"><i class="fa fa-fw fa-refresh"></i>刷新</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7 col-md-7"></div>
+    </div>
+</div>
+
+<!--新增数据表的模态框-->
+
+<div th:include="/tpls/footer::footer" th:remove="tag"></div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el:"body",
+        components:{
+            navbar : VueStrap.navbar,
+            dropdown : VueStrap.dropdown
+        }
+    });
+</script>
+</body>
+</html>

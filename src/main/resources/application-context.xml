@@ -60,6 +60,11 @@
                 <property name="mapUnderscoreToCamelCase" value="true"/>
             </bean>
         </property>
+        <property name="mapperLocations">
+            <list>
+                <value>classpath:mybatis/*.xml</value>
+            </list>
+        </property>
         <property name="plugins">
             <array>
                 <bean class="com.github.pagehelper.PageInterceptor">

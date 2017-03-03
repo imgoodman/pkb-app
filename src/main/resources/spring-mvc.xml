@@ -11,7 +11,7 @@
                         http://www.springframework.org/schema/mvc/spring-mvc.xsd"
        default-lazy-init="true" default-autowire="byName">
     <!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->
-    <context:component-scan base-package="com.i51zhishi.kb.controller">
+    <context:component-scan base-package="com.i51zhishi.kb">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
@@ -23,9 +23,10 @@
 
     <!--静态资源映射-->
     <!--本项目把静态资源放在了WEB-INF的statics目录下，资源映射如下-->
-    <mvc:resources mapping="/css/**" location="/WEB-INF/statics/css/"/>
-    <mvc:resources mapping="/js/**" location="/WEB-INF/statics/js/"/>
-    <mvc:resources mapping="/image/**" location="/WEB-INF/statics/image/"/>
+    <mvc:resources mapping="/css/**" location="/statics/css/"/>
+    <mvc:resources mapping="/js/**" location="/statics/js/"/>
+    <mvc:resources mapping="/image/**" location="/statics/image/"/>
+    <mvc:resources mapping="/image/**" location="/statics/framework/"/>
 
     <!--但是项目部署到linux下发现WEB-INF的静态资源会出现无法解析的情况，但是本地tomcat访问正常，因此建议还是直接把静态资源放在webapp的statics下，映射配置如下-->
     <!--<mvc:resources mapping="/css/**" location="/statics/css/"/>-->
@@ -92,5 +93,48 @@
         <property name="maxUploadSize" value="20971500"/>
         <property name="defaultEncoding" value="UTF-8"/>
         <property name="resolveLazily" value="true"/>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="cacheSeconds" value="0" />
+
+        <!-- 处理字符编码问题 -->
+        <property name="messageConverters">
+            <list>
+                <bean  class="org.springframework.http.converter.StringHttpMessageConverter">
+                    <property name="supportedMediaTypes">
+                        <list>
+                            <value>text/html;charset=UTF-8</value>
+                        </list>
+                    </property>
+                </bean>
+                <ref bean="mappingJacksonHttpMessageConverter" />
+            </list>
+        </property>
+        <!-- 自定义对象注入，处理session中用户对象信息获取 -->
+        <!--<property name="customArgumentResolvers">
+            <list>
+                <bean class="com.potevio.web.UserArgumentResolver"></bean>
+            </list>
+        </property>-->
+
+    </bean>
+
+    <!-- 启用Json输出集成 -->
+    <bean id="mappingJacksonHttpMessageConverter"
+          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+
+        <property name="supportedMediaTypes">
+            <list>
+                <value>application/json;charset=UTF-8</value>
+            </list>
+        </property>
+        <property name="objectMapper">
+            <bean class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+                <property name="failOnEmptyBeans" value="false"/>
+
+
+            </bean>
+        </property>
     </bean>
 </beans>

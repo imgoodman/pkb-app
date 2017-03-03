@@ -63,6 +63,8 @@ $RECYCLE.BIN/
 *.lnk
 src/main/resources/jdbc.properties
 src/main/resources/jdbc.properties
+src/main/webapp/statics/framework
+src/main/webapp/statics/framework/element-ui
 target/
 target/classes/jdbc.properties
 target/classes/mybatis-generator/generatorConfig.xml

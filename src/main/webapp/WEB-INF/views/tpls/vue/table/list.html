@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:include="/tpls/vue/header::header('定义数据表')" th:remove="tag"></div>
+</head>
+<body>
+<div id="app">
+    <div th:include="/tpls/vue/top-menu::top_menu" th:remove="tag"></div>
+
+    <el-row>
+        <el-col :span="24">
+            <el-breadcrumb separator="/" style="margin: 15px;">
+                <el-breadcrumb-item><a href="/">首页</a></el-breadcrumb-item>
+                <el-breadcrumb-item><a href="/table/list">数据表管理</a></el-breadcrumb-item>
+            </el-breadcrumb>
+        </el-col>
+    </el-row>
+
+    <el-row :gutter="10"  style="margin: 0;">
+        <el-col :span="10">
+            <div class="grid-content">
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span style="line-height: 36px;">数据表</span>
+                        <el-button style="float: right;" type="primary" size="small" @click="tableDlgVisible=true"><i class="fa fa-fw fa-plus"></i>定义数据表</el-button>
+                    </div>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-input placeholder="请输入要查询的数据表..." icon="search" v-model="filterData.filterName" :on-icon-click="filterTable">查询</el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-button-group style="margin: 10px 0;">
+                                <el-button type="success" icon="edit" size="small">编辑</el-button>
+                                <el-button type="danger" icon="delete" size="small">删除</el-button>
+                            </el-button-group>
+                        </el-col>
+                    </el-row>
+                    <el-table :data="tableData" style="width: 100%;" stripe="true">
+                        <el-table-column type="selection"></el-table-column>
+                        <el-table-column type="index"></el-table-column>
+                        <el-table-column prop="nameCn" label="中文名称" sortable="true"></el-table-column>
+                        <el-table-column prop="nameEn" label="英文名称" sortable="true"></el-table-column>
+                        <el-table-column prop="remarks" label="备注"></el-table-column>
+                    </el-table>
+                    <el-pagination layout="total, prev, pager, next" :total="pagerData.total"></el-pagination>
+                </el-card>
+            </div>
+        </el-col>
+        <el-col :span="14">
+            <div class="grid-content">bbbbb</div>
+        </el-col>
+    </el-row>
+
+    <!--新增数据表的模态框-->
+    <el-dialog title="数据表" v-model="tableDlgVisible" :close-on-click-modal="false">
+        <el-form :label-position="top" :model="table" :rules="rules" ref="tableForm">
+            <input type="hidden" :model="table.id">
+            <el-form-item label="中文名称" prop="nameCn">
+                <el-input v-model="table.nameCn" placeholder="请输入中文名称"></el-input>
+            </el-form-item>
+            <el-form-item label="英文名称" prop="nameEn">
+                <el-input v-model="table.nameEn"></el-input>
+            </el-form-item>
+            <el-form-item label="备注">
+                <el-input type="textarea" :rows="3" v-model="table.remarks"></el-input>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="tableDlgVisible=false">取消</el-button>
+            <el-button @click="resetForm('tableForm')">重置</el-button>
+            <el-button type="primary" @click="submitForm('tableForm')"><i class="fa fa-fw fa-check"></i>确定</el-button>
+        </span>
+    </el-dialog>
+
+    <div th:include="/tpls/vue/footer::footer" th:remove="tag"></div>
+</div>
+
+<script type="text/javascript">
+    var vm = new Vue({
+        el:"#app",
+        data: {
+            activeIndex:'1',
+            tableDlgVisible:false,
+            filterData:{
+                filterName:"",
+                pageIndex:0,
+                pageSize:10,
+                orderBy:"name_cn",
+                orderType:"asc"
+            },
+            table:{
+                nameCn:"",
+                nameEn:"",
+                remarks:""
+            },
+            pagerData:{
+                total:0
+            },
+            rules:{
+                nameCn:[
+                    {required:true, message:'请输入中文名称', trigger:'blur'},
+                    {min:2, max:20, message:'中文名称长度在2到20个字符', trigger:'blur'}
+                ]
+            },
+            tableData: []
+        },
+        computed:{
+            tableUrl:function(){
+                return "/table/data?filterName="+this.filterData.filterName+"&pageIndex="+this.filterData.pageIndex+"&pageSize="+this.filterData.pageSize+"&orderBy="+this.filterData.orderBy+"&orderType="+this.filterData.orderType;
+            },
+            tableTotalUrl:function(){
+                return "/table/total?filterName="+this.filterData.filterName;
+            }
+        },
+        mounted:function(){
+            this.getData();
+        },
+        methods:{
+            getData:function(){
+                axios.get(this.tableUrl).then(function(res){
+                    vm.tableData=res.data.extendData;
+                });
+                axios.get(this.tableTotalUrl).then(function(res){
+                    vm.pagerData.total=res.data.extendData;
+                });
+            },
+            filterTable:function(){
+                this.getData();
+            },
+            submitForm:function(formName){
+                vm.$refs[formName].validate(function(valid) {
+                    if(valid){
+                        //alert('submit');
+                        //console.log(vm.table);
+                        var formdata=new FormData();
+                        formdata.append('nameCn',vm.table.nameCn);
+                        formdata.append('nameEn',vm.table.nameEn);
+                        formdata.append('remarks',vm.table.remarks);
+                        axios.post('/table/insert',formdata)
+                                .then(function(res){
+                                    //console.log(res.data.extendData);
+                                    if(res.data.success){
+                                        vm.$alert('定义数据表成功','操作成功',{
+                                            confirmButtonText:'知道了',
+                                            type:'success'
+                                        }).then(function(){
+                                            vm.$refs[formName].resetFields();
+                                            vm.tableDlgVisible=false;
+                                        });
+                                    }else{
+                                        vm.$alert('定义数据表失败','操作失败',{
+                                            confirmButtonText:'再试一次',
+                                            type:'error'
+                                        });
+                                    }
+                                });
+                    }else{
+                        //console.log('error submit');
+                        vm.$alert('数据表格式不正确','操作失败',{
+                            confirmButtonText:'再试一次',
+                            type:'warning'
+                        });
+                        return false;
+                    }
+                });
+            },
+            resetForm:function(formName){
+                vm.$refs[formName].resetFields();
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,8 +1,10 @@
 package com.i51zhishi.kb.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Table {
+public class Table implements Serializable
+{
     private Integer id;
 
     private String nameCn;

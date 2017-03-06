@@ -58,10 +58,10 @@
         <el-form :label-position="top" :model="table" :rules="rules" ref="tableForm">
             <input type="hidden" :model="table.id">
             <el-form-item label="中文名称" prop="nameCn">
-                <el-input v-model="table.nameCn" placeholder="请输入中文名称"></el-input>
+                <el-input v-model="table.nameCn" placeholder="请输入中文名称" @blur="getNameEn"></el-input>
             </el-form-item>
             <el-form-item label="英文名称" prop="nameEn">
-                <el-input v-model="table.nameEn"></el-input>
+                <el-input v-model="table.nameEn" :disabled="true" placeholder="根据中文名称自动产生"></el-input>
             </el-form-item>
             <el-form-item label="备注">
                 <el-input type="textarea" :rows="3" v-model="table.remarks"></el-input>
@@ -129,12 +129,20 @@
             filterTable:function(){
                 this.getData();
             },
+            getNameEn:function(){
+                //console.log(this.table.nameCn);
+                axios.get("/table/pinyin?nameCn="+vm.table.nameCn)
+                        .then(function(res){
+                            vm.table.nameEn=res.data.extendData;
+                        });
+            },
             submitForm:function(formName){
                 vm.$refs[formName].validate(function(valid) {
                     if(valid){
                         //alert('submit');
                         //console.log(vm.table);
                         var formdata=new FormData();
+                        formdata.append("id",vm.table.id);
                         formdata.append('nameCn',vm.table.nameCn);
                         formdata.append('nameEn',vm.table.nameEn);
                         formdata.append('remarks',vm.table.remarks);

@@ -20,4 +20,8 @@ public interface TableMapper {
     Integer getTotal(TableFilterVO tableFilterVO);
 
     int updateByPrimaryKey(Table record);
+
+    Integer getNameEnCount(String nameEn);
+
+    Integer isNameExist(Table table);
 }

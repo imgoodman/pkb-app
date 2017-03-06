@@ -14,4 +14,6 @@ public interface TableService
     Page<Table> selectAll(TableFilterVO tableFilterVO);
 
     Integer getTotal(TableFilterVO tableFilterVO);
+
+    Integer getNameEnCount(String nameEn);
 }

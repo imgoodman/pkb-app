@@ -30,7 +30,15 @@ public class TableServiceImpl implements TableService
     public Table create(Table table)
     {
         log.debug(table);
-        tableMapper.insert(table);
+        if(tableMapper.isNameExist(table)>0){
+            log.debug("name already exist:"+table.getNameCn()+" in id:"+table.getId());
+            return null;
+        }
+        if(table.getId()==null) {
+            tableMapper.insert(table);
+        }else{
+            tableMapper.updateByPrimaryKey(table);
+        }
         return tableMapper.selectByPrimaryKey(table.getId());
     }
 
@@ -54,5 +62,10 @@ public class TableServiceImpl implements TableService
     public Integer getTotal(TableFilterVO tableFilterVO)
     {
         return tableMapper.getTotal(tableFilterVO);
+    }
+
+    public Integer getNameEnCount(String nameEn)
+    {
+        return tableMapper.getNameEnCount(nameEn);
     }
 }

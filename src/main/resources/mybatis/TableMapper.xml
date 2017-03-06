@@ -24,6 +24,12 @@
     values (#{nameCn,jdbcType=VARCHAR}, #{nameEn,jdbcType=VARCHAR},
       #{creatorId,jdbcType=BIGINT}, #{remarks,jdbcType=VARCHAR})
   </insert>
+  <select id="isNameExist" parameterType="com.i51zhishi.kb.entity.Table" resultType="Integer">
+    select count(0) from t_table where state=0 AND name_cn=#{nameCn}
+    <if test="id!=null and id!=''">
+      and id<>#{id}
+    </if>
+  </select>
   <update id="updateByPrimaryKey" parameterType="com.i51zhishi.kb.entity.Table">
     update t_table
     set name_cn = #{nameCn,jdbcType=VARCHAR},
@@ -71,5 +77,8 @@
       OR
       remarks like concat("%",#{filterName},"%")
     </if>
+  </select>
+  <select id="getNameEnCount" parameterType="String" resultType="Integer">
+    SELECT count(0) from t_table where name_en like concat( concat(#{nameEn},"_"),"%")
   </select>
 </mapper>

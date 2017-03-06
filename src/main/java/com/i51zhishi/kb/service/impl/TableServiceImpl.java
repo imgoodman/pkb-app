@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.i51zhishi.kb.entity.Table;
 import com.i51zhishi.kb.mapper.TableMapper;
 import com.i51zhishi.kb.service.TableService;
+import com.i51zhishi.kb.vo.TableDataVO;
 import com.i51zhishi.kb.vo.TableFilterVO;
 
 import org.apache.commons.logging.Log;
@@ -13,6 +14,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 /**
@@ -57,6 +60,11 @@ public class TableServiceImpl implements TableService
                 tableMapper.selectAll(tableFilterVO);
             }
         });
+    }
+
+    public List<TableDataVO> getAllTables()
+    {
+        return tableMapper.getAllTables();
     }
 
     public Integer getTotal(TableFilterVO tableFilterVO)

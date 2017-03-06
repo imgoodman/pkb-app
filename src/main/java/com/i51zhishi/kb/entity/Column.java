@@ -33,6 +33,8 @@ public class Column {
 
     private Integer valueTableColumnId;
 
+    private Boolean onlySingleValue;
+
     public Integer getId() {
         return id;
     }
@@ -151,5 +153,15 @@ public class Column {
 
     public void setValueTableColumnId(Integer valueTableColumnId) {
         this.valueTableColumnId = valueTableColumnId;
+    }
+
+    public Boolean getOnlySingleValue()
+    {
+        return onlySingleValue;
+    }
+
+    public void setOnlySingleValue(Boolean onlySingleValue)
+    {
+        this.onlySingleValue = onlySingleValue;
     }
 }

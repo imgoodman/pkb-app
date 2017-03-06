@@ -60,6 +60,15 @@ public class TableController
         return result;
     }
 
+    @RequestMapping("/dataall")
+    @ResponseBody
+    public JsonResult dataall()
+    {
+        JsonResult result=new JsonResult(true);
+        result.setExtendData(tableService.getAllTables());
+        return result;
+    }
+
     @RequestMapping("/total")
     @ResponseBody
     public JsonResult total(TableFilterVO tableFilterVO)

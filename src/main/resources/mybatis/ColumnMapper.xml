@@ -23,19 +23,28 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.i51zhishi.kb.entity.Column">
-    insert into t_column (id, table_id, name_cn, 
+    insert into t_column (table_id, name_cn,
       name_en, value_type, is_required, 
       can_repeat, order_index, can_search, 
-      creator_id, create_time, remarks, 
-      value_max_length, value_table_id, value_table_column_id
+      creator_id, remarks,
+      value_max_length, value_table_id, value_table_column_id, only_single_value
       )
-    values (#{id,jdbcType=INTEGER}, #{tableId,jdbcType=INTEGER}, #{nameCn,jdbcType=VARCHAR}, 
+    values (#{tableId,jdbcType=INTEGER}, #{nameCn,jdbcType=VARCHAR},
       #{nameEn,jdbcType=VARCHAR}, #{valueType,jdbcType=INTEGER}, #{isRequired,jdbcType=BIT}, 
       #{canRepeat,jdbcType=BIT}, #{orderIndex,jdbcType=INTEGER}, #{canSearch,jdbcType=BIT}, 
-      #{creatorId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, 
-      #{valueMaxLength,jdbcType=INTEGER}, #{valueTableId,jdbcType=INTEGER}, #{valueTableColumnId,jdbcType=INTEGER}
+      #{creatorId,jdbcType=BIGINT}, #{remarks,jdbcType=VARCHAR},
+      #{valueMaxLength,jdbcType=INTEGER}, #{valueTableId,jdbcType=INTEGER}, #{valueTableColumnId,jdbcType=INTEGER}, #{onlySingleValue,jdbcType=BIT}
       )
   </insert>
+  <select id="isNameExist" parameterType="com.i51zhishi.kb.entity.Column" resultType="Integer">
+    SELECT COUNT(0) FROM t_column where table_id=#{tableId} and name_cn=#{nameCn}
+    <if test="id!=null and id!=''">
+      AND id!=#{id}
+    </if>
+  </select>
+  <select id="getNameEnCount" parameterType="com.i51zhishi.kb.entity.Column" resultType="Integer">
+    SELECT count(0) FROM t_column WHERE table_id=#{tableId} and name_en LIKE concat( concat(#{nameEn},"_"),"%")
+  </select>
   <update id="updateByPrimaryKey" parameterType="com.i51zhishi.kb.entity.Column">
     update t_column
     set table_id = #{tableId,jdbcType=INTEGER},
@@ -51,18 +60,23 @@
       remarks = #{remarks,jdbcType=VARCHAR},
       value_max_length = #{valueMaxLength,jdbcType=INTEGER},
       value_table_id = #{valueTableId,jdbcType=INTEGER},
-      value_table_column_id = #{valueTableColumnId,jdbcType=INTEGER}
+      value_table_column_id = #{valueTableColumnId,jdbcType=INTEGER},
+      only_single_value= #{onlySingleValue,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select id, table_id, name_cn, name_en, value_type, is_required, can_repeat, order_index, 
-    can_search, creator_id, create_time, remarks, value_max_length, value_table_id, value_table_column_id
+    can_search, creator_id, create_time, remarks, value_max_length, value_table_id, value_table_column_id, only_single_value
     from t_column
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap">
-    select id, table_id, name_cn, name_en, value_type, is_required, can_repeat, order_index, 
-    can_search, creator_id, create_time, remarks, value_max_length, value_table_id, value_table_column_id
-    from t_column
+  <select id="selectAll" resultType="com.i51zhishi.kb.vo.ColumnDataVO" parameterType="Integer">
+    select c.*,t1.name_cn as table_name,t2.name_cn as value_table_name,c2.name_cn as value_table_column_name
+    from t_column as c
+    left join t_table as t1 on c.table_id=t1.id
+    left join t_table as t2 on c.value_table_id=t2.id
+    left join t_column as c2 on c.value_table_column_id=c.id
+    WHERE c.table_id=#{id}
+    ORDER BY order_index ASC
   </select>
 </mapper>

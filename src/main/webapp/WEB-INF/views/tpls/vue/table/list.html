@@ -37,7 +37,7 @@
                             </el-button-group>
                         </el-col>
                     </el-row>
-                    <el-table :data="tableData" style="width: 100%;" stripe="true">
+                    <el-table :data="tableData" style="width: 100%;" stripe="true" :row-class-name="tableRowClass">
                         <el-table-column type="selection"></el-table-column>
                         <el-table-column type="index"></el-table-column>
                         <el-table-column prop="nameCn" label="中文名称" sortable="true"></el-table-column>
@@ -49,18 +49,42 @@
             </div>
         </el-col>
         <el-col :span="14">
-            <div class="grid-content">bbbbb</div>
+            <div class="grid-content">
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span style="line-height: 36px;" v-text="columnTip">xxx的列</span>
+                        <el-button style="float: right;" type="primary" size="small" @click="columnDlgVisible=true"><i class="fa fa-fw fa-plus"></i>定义列</el-button>
+                    </div>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-button-group style="margin: 10px 0;">
+                                <el-button type="success" icon="edit" size="small">编辑</el-button>
+                                <el-button type="danger" icon="delete" size="small">删除</el-button>
+                            </el-button-group>
+                        </el-col>
+                    </el-row>
+                    <el-table style="width: 100%;" stripe="true" :data="columnData">
+                        <el-table-column type="selection"></el-table-column>
+                        <el-table-column type="index"></el-table-column>
+                        <el-table-column prop="nameCn" label="中文名称" ></el-table-column>
+                        <el-table-column prop="nameEn" label="英文名称" ></el-table-column>
+                        <el-table-column prop="valueType" label="取值类型"></el-table-column>
+                        <el-table-column prop="info" label="其它"></el-table-column>
+                        <el-table-column prop="remarks" label="备注"></el-table-column>
+                    </el-table>
+                </el-card>
+            </div>
         </el-col>
     </el-row>
 
     <!--新增数据表的模态框-->
     <el-dialog title="数据表" v-model="tableDlgVisible" :close-on-click-modal="false">
         <el-form :label-position="top" :model="table" :rules="rules" ref="tableForm">
-            <input type="hidden" :model="table.id">
-            <el-form-item label="中文名称" prop="nameCn">
+            <input type="hidden" v-model="table.id">
+            <el-form-item label="中文名称" prop="tableNameCn">
                 <el-input v-model="table.nameCn" placeholder="请输入中文名称" @blur="getNameEn"></el-input>
             </el-form-item>
-            <el-form-item label="英文名称" prop="nameEn">
+            <el-form-item label="英文名称" prop="tableNameEn">
                 <el-input v-model="table.nameEn" :disabled="true" placeholder="根据中文名称自动产生"></el-input>
             </el-form-item>
             <el-form-item label="备注">
@@ -74,6 +98,64 @@
         </span>
     </el-dialog>
 
+    <!--新增列的模态框-->
+    <el-dialog title="数据表的列" v-model="columnDlgVisible" :close-on-click-modal="false">
+        <el-form :label-position="top" :model="column" :rules="columnRules" ref="columnForm">
+            <input type="hidden" v-modal="column.id">
+            <el-form-item label="中文名称" prop="columnNameCn">
+                <el-input v-model="column.nameCn" placeholder="请输入中文名称..." @blur="getColumnNameEn"></el-input>
+            </el-form-item>
+            <el-form-item label="英文名称" prop="columnNameEn">
+                <el-input v-model="column.nameEn" placeholder="根据中文名称自动生成..." :disabled="true"></el-input>
+            </el-form-item>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="是否必填">
+                        <el-switch v-model="column.isRequired" on-text="是" off-text="否"></el-switch>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="是否可以作为搜索条件">
+                        <el-switch v-model="column.canSearch" on-text="是" off-text="否"></el-switch>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="所有取值是否可以重复">
+                        <el-switch v-model="column.canRepeat" on-text="是" off-text="否"></el-switch>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="仅允许单值">
+                        <el-switch v-model="column.onlySingleValue" on-text="是" off-text="否"></el-switch>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-form-item label="取值类型">
+                <el-radio-group v-model="column.valueType" @change="valueTypeChange">
+                    <el-radio :label="1">字符串</el-radio>
+                    <el-radio :label="2">日期</el-radio>
+                    <el-radio :label="3">时间</el-radio>
+                    <el-radio :label="4">日期+时间</el-radio>
+                    <el-radio :label="5">多文本</el-radio>
+                    <el-radio :label="6">附件</el-radio>
+                    <el-radio :label="7">布尔型(是否型)</el-radio>
+                    <el-radio :label="8">对象</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="对象来源于表" v-show="valueIsObject">
+                <el-cascader :options="options" :props="props" @active-item-change="tableSelectChange"></el-cascader>
+            </el-form-item>
+            <el-form-item label="备注">
+                <el-input type="textarea" :rows="3" v-model="column.remarks"></el-input>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="columnDlgVisible=false">取消</el-button>
+            <el-button @click="resetForm('columnForm')">重置</el-button>
+            <el-button type="primary" @click="submitForm('columnForm')"><i class="fa fa-fw fa-check"></i>确定</el-button>
+        </span>
+    </el-dialog>
+
     <div th:include="/tpls/vue/footer::footer" th:remove="tag"></div>
 </div>
 
@@ -83,6 +165,7 @@
         data: {
             activeIndex:'1',
             tableDlgVisible:false,
+            columnDlgVisible:false,
             filterData:{
                 filterName:"",
                 pageIndex:0,
@@ -91,20 +174,51 @@
                 orderType:"asc"
             },
             table:{
+                id:"",
                 nameCn:"",
                 nameEn:"",
+                remarks:""
+            },
+            column:{
+                id:"",
+                tableId:"",
+                nameCn:"",
+                nameEn:"",
+                valueType:1,
+                isRequired:false,
+                canRepeat:true,
+                canSearch:false,
+                onlySingleValue:true,
+                valueMaxLength:"",
+                valueTableId:"",
+                valueTableColumnId:"",
                 remarks:""
             },
             pagerData:{
                 total:0
             },
             rules:{
-                nameCn:[
+                tableNameCn:[
                     {required:true, message:'请输入中文名称', trigger:'blur'},
                     {min:2, max:20, message:'中文名称长度在2到20个字符', trigger:'blur'}
                 ]
             },
-            tableData: []
+            columnRules:{
+                columnNameCn:[
+                    {required:true,message:'请输入中文名称',trigger:'blur'},
+                    {min:2,max:50,message:'中文名称长度在2到50个字符',trigger:'blur'}
+                ]
+            },
+            tableData: [],
+            currentTable:{},
+            columnData:[],
+            options:[],
+            props:{
+                value:"id",
+                label:"nameCn",
+                children:"columns"
+            },
+            valueIsObject:false
         },
         computed:{
             tableUrl:function(){
@@ -112,6 +226,15 @@
             },
             tableTotalUrl:function(){
                 return "/table/total?filterName="+this.filterData.filterName;
+            },
+            columnUrl:function(){
+                return "/column/data?tableId="+this.currentTable.id;
+            },
+            tableAllUrl:function(){
+                return "/table/dataall";
+            },
+            columnTip:function(){
+                return this.currentTable.nameCn+"的所有列";
             }
         },
         mounted:function(){
@@ -121,10 +244,36 @@
             getData:function(){
                 axios.get(this.tableUrl).then(function(res){
                     vm.tableData=res.data.extendData;
+                    if(res.data.extendData.length>0){
+                        vm.currentTable=res.data.extendData[0];
+                        vm.column.tableId=vm.currentTable.id;
+                        //get columns
+                        axios.get(vm.columnUrl)
+                                .then(function(res_column){
+                                    if(res_column.data.success){
+                                        vm.columnData=res_column.data.extendData;
+                                    }else{
+                                        vm.columnData=[];
+                                    }
+                                });
+                    }else{
+                        vm.currentTable={};
+                    }
                 });
                 axios.get(this.tableTotalUrl).then(function(res){
                     vm.pagerData.total=res.data.extendData;
                 });
+                axios.get(this.tableAllUrl).then(function(res){
+                    vm.options=res.data.extendData;
+                    _.map(vm.options,function(item){
+                        item.columns=[];
+                    });
+                });
+            },
+            tableRowClass:function(row,index){
+                if(row.id==vm.currentTable.id){
+                    return "positive-row";
+                }
             },
             filterTable:function(){
                 this.getData();
@@ -135,6 +284,23 @@
                         .then(function(res){
                             vm.table.nameEn=res.data.extendData;
                         });
+            },
+            getColumnNameEn:function(){
+                var formdata=new FormData();
+                formdata.append("tableId",vm.currentTable.id);
+                formdata.append("nameCn",vm.column.nameCn);
+                axios.post("/column/pinyin",formdata).then(function(res){
+                    if(res.data.success){
+                        vm.column.nameEn=res.data.extendData;
+                    }
+                });
+            },
+            valueTypeChange:function(val){
+                if(val=="8"){
+                    vm.valueIsObject=true;
+                }else{
+                    vm.valueIsObject=false;
+                }
             },
             submitForm:function(formName){
                 vm.$refs[formName].validate(function(valid) {
@@ -156,6 +322,8 @@
                                         }).then(function(){
                                             vm.$refs[formName].resetFields();
                                             vm.tableDlgVisible=false;
+                                            vm.tableData.push(res.data.extendData);
+                                            //console.log(vm.tableData);
                                         });
                                     }else{
                                         vm.$alert('定义数据表失败','操作失败',{
@@ -176,6 +344,19 @@
             },
             resetForm:function(formName){
                 vm.$refs[formName].resetFields();
+            },
+            tableSelectChange:function(val){
+                //console.log(val);
+                _.map(vm.options,function(item){
+                    if(item.id==val){
+                        if(item.columns.length=0){
+                            axios.get("/column/data?tableId="+val).then(function(res){
+                                item.columns=res.data.extendData;
+                            });
+                        }
+                        return false;
+                    }
+                });
             }
         }
     });
